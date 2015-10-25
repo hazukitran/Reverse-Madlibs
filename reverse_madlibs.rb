@@ -1,12 +1,12 @@
 
 # ---------------- METHODS -------------------
-
+require 'pry'
 def print_menu
   system 'clear'
   puts "Reverse Mad Libs".center(50, "---")
 end
 
-def get_words_from_file (file_name)
+def get_words_from_file(file_name)
   unless File.exist?(file_name)
     say "#{file_name} doesn't exist!"
     return
@@ -18,14 +18,14 @@ def get_words_from_file (file_name)
 end
 
 def user_sentence
-  sentence = STDIN.gets.chomp
+  STDIN.gets.chomp
 end
 
-def add_sentence_to_file(user_sentence)
-  all_sentences = File.readlines("sentences.txt")
-  unless all_sentences.include?("\n#{user_sentence}")
-    File.open("sentences.txt", "a+") do |file|
-      file << "\n#{user_sentence}"
+def add_sentence_to_file(user_sentence, file_name)
+  all_sentences = File.readlines(file_name)
+  unless all_sentences.include?("#{user_sentence}")
+    File.open(file_name, "a+") do |file|
+      file << "#{user_sentence}"
     end
   end
 end
@@ -41,17 +41,16 @@ def get_lines_from_file(file_name)
   end
 end
 
-def randomise(sentences, nouns, verbs, adjectives)
-  sentences.gsub!("NOUN", nouns.sample)
-  sentences.gsub!("VERB", verbs.sample)
-  sentences.gsub!("ADJECTIVE", adjectives.sample)
+def randomise(sentence, nouns, verbs, adjectives)
+  sentence.gsub!("NOUN", nouns.sample)
+  sentence.gsub!("VERB", verbs.sample)
+  sentence.gsub!("ADJECTIVE", adjectives.sample)
 end
 
 # -------------- START PROGRAM -----------------
 
 print_menu
 file_name = ARGV[0]
-sentences = get_lines_from_file(file_name).to_s
 
 nouns = get_words_from_file("nouns.txt")
 verbs = get_words_from_file("verbs.txt")
@@ -71,21 +70,14 @@ loop do
 
     => Write down your sentence below:
     """
-    user_sentence
-    add_sentence_to_file(user_sentence)
-    
-    puts randomise(user_sentence, nouns, verbs, adjectives)
+    sentence = user_sentence
+    add_sentence_to_file(sentence, file_name)
+    puts randomise(sentence, nouns, verbs, adjectives)
 
   elsif response == "n"
-    puts randomise(sentences, nouns, verbs, adjectives)
+    sentence = get_lines_from_file(file_name).sample
+    puts randomise(sentence, nouns, verbs, adjectives)
   else response == "q"
     break
   end
 end
-
-
-
-
-
-
-
