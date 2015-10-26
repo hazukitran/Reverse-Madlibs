@@ -25,7 +25,7 @@ def add_sentence_to_file(user_sentence, file_name)
   all_sentences = File.readlines(file_name)
   unless all_sentences.include?("#{user_sentence}")
     File.open(file_name, "a+") do |file|
-      file << "#{user_sentence}"
+      file << "\n#{user_sentence}"
     end
   end
 end
@@ -41,10 +41,11 @@ def get_lines_from_file(file_name)
   end
 end
 
-def randomise(sentence, nouns, verbs, adjectives)
-  sentence.gsub!("NOUN", nouns.sample)
-  sentence.gsub!("VERB", verbs.sample)
-  sentence.gsub!("ADJECTIVE", adjectives.sample)
+def randomise(sentences, nouns, verbs, adjectives)
+  sentences.gsub!("NOUN", nouns.sample)
+  sentences.gsub!("VERB", verbs.sample)
+  sentences.gsub!("ADJECTIVE", adjectives.sample)
+  sentences
 end
 
 # -------------- START PROGRAM -----------------
@@ -75,8 +76,8 @@ loop do
     puts randomise(sentence, nouns, verbs, adjectives)
 
   elsif response == "n"
-    sentence = get_lines_from_file(file_name).sample
-    puts randomise(sentence, nouns, verbs, adjectives)
+    sentences = get_lines_from_file(file_name).sample
+    puts randomise(sentences, nouns, verbs, adjectives)
   else response == "q"
     break
   end
